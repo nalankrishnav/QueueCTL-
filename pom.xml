@@ -93,25 +93,34 @@
 
       <!-- Shade plugin to create an executable fat JAR (java -jar) -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals><goal>shade</goal></goals>
-            <configuration>
-              <!-- Put your actual main class here -->
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>com.queuectl.QueueCtlApplication</mainClass>
-                </transformer>
-              </transformers>
-              <createDependencyReducedPom>false</createDependencyReducedPom>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-shade-plugin</artifactId>
+		  <version>3.2.4</version>
+		  <executions>
+		    <execution>
+		      <phase>package</phase>
+		      <goals>
+		        <goal>shade</goal>
+		      </goals>
+		      <configuration>
+		        <!-- Attach the shaded JAR as a separate artifact with classifier "-shaded" -->
+		        <shadedArtifactAttached>true</shadedArtifactAttached>
+		        <shadedClassifierName>shaded</shadedClassifierName>
+		
+		        <!-- ensure shading sets the main class in the MANIFEST -->
+		        <transformers>
+		          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+		            <mainClass>com.queuectl.QueueCtlApplication</mainClass>
+		          </transformer>
+		        </transformers>
+		
+		        <!-- avoid creating a dependency-reduced-pom, it's often noisy -->
+		        <createDependencyReducedPom>false</createDependencyReducedPom>
+		      </configuration>
+		    </execution>
+		  </executions>
+		</plugin>
+
 
       <!-- (Optional) Surefire for running tests -->
       <plugin>
